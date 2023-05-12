@@ -132,8 +132,15 @@ const buildSqlUpdateStr = (taskId, payload) => {
             throw new Error("Missing arguments in buildSqlUpdateStr");
         };
 
+        // Conditions to make sure complete status and date completed are included together in payload
+        if (payload?.taskStatus === 'done' && !payload?.dateCompleted) {
+            throw new Error("Missing date_completed");
+        } else if (payload?.dateCompleted && (payload?.taskStatus !== 'done' || !payload?.taskStatus) ){
+            throw new Error("Missing done taskStatus");
+        };
+
         for (const [key, value] of Object.entries(payload)) {
-            payloadArr.push([key, value])
+            payloadArr.push([key, value]);
         };
     
         for (let entry of payloadArr) {
