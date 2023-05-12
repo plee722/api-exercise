@@ -25,24 +25,28 @@ summary from the task can contain personal information.
 
 ## API Endpoints
 * GET: /api/tasks, /api/tasks/user/:userId, /api/users
+
 To view users and tasks in browser, these are the following GET endpoints: /api/tasks, /api/tasks/user/:userId, /api/users. You can visit these URL paths or use a curl command like below.
 ```
 curl -X GET http://localhost:8080/api/tasks -H "Content-Type: application/json" -d ''
 ```
 
 * POST: /api/tasks/:taskId
+
 To add a task, use a curl command for the POST route like the example below. The fields taskName, summary, and userId are all required.
 ```
 curl -X POST http://localhost:8080/api/tasks -H "Content-Type: application/json" -d '{"taskName": "test task 1", "summary": "task 1 summary", "userId": 2}'
 ```
 
 * PUT: /api/tasks/:taskId
+
 To update an existing task, use a curl command for the PUT route like below. The fields are taskName, summary, task_status, date_completed. Not all are necessary to make a successful update. However, at least one field is needed. If date_completed or task_status with value "done" is in curl, the other field must be included with a value.
 ```
 curl -X PUT http://localhost:8080/api/tasks/user/3 -H "Content-Type: application/json" -d '{"taskName": "test task 1", "summary": "task 1 summary", "taskStatus": "done", "dateCompleted": "2023-05-10", "userId": 3 }'
 ```
 
 * DELETE: /api/tasks/:taskId
+
 To delete an existing task, use a curl method for the DELETE route like below. This command takes no payload.
 ```
 curl -X DELETE http://localhost:8080/api/tasks/2 -H "Content-Type: application/json" -d ''
