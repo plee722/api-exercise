@@ -6,7 +6,7 @@ const query = promisify(connection.query).bind(connection)
 // Gets all users
 const getUsers = async () => {
     try {
-        const sql = 'SELECT * from user';
+        const sql = 'SELECT id, first_name, last_name, user_role from user';
         const result = await query(sql);
         return result;
     } catch (error) {
@@ -17,7 +17,7 @@ const getUsers = async () => {
 // Gets all tasks
 const getTasks = async () => {
     try {
-        const sql = 'SELECT * FROM task';
+        const sql = 'SELECT id, task_name, task_status, date_completed, user_id FROM task';
         const result = await query(sql);
         return result;
     } catch (error) {
@@ -28,7 +28,7 @@ const getTasks = async () => {
 // Gets all tasks for a specific user
 const getTasksByUser = async (userId) => {
     try {
-        const sql = 'SELECT * FROM task WHERE user_id = ?';
+        const sql = 'SELECT id, task_name, summary, task_status, date_completed, user_id FROM task WHERE user_id = ?';
         const result = await query(sql, userId);
         return result;
     } catch (error) {
@@ -51,12 +51,30 @@ const createTask = async (taskValues) => {
 const updateTask = async (taskId, payload) => {
     try {
         const queryArr = buildSqlUpdateStr(taskId, payload);
+        const sql = queryArr[0];
+        const sqlValues = queryArr[1];
 
-        const result = await query(queryArr[0], queryArr[1]);
+        const result = await query(sql, sqlValues);
         return result;
-
     } catch (error) {
         throw error;
+    };
+};
+
+// TODO: Add logic to prevent redundant notifications
+// TODO: Add functionality to notify, e.g. email notification
+// Notify manager (currently just a print statement)
+const notifyManager = async (taskId, payload) => {
+    if (payload?.taskStatus === 'done') {
+        const sql = 'SELECT user.first_name AS first_name, user.last_name AS last_name, task.task_name AS task_name, task.date_completed AS date_completed FROM user INNER JOIN task ON user.id = task.user_id where task.id = ?'
+        let data = await query(sql, taskId);
+
+        data = JSON.parse(JSON.stringify(data[0]));
+        console.log('data', data);
+        const { first_name, last_name, task_name, date_completed } = data;
+        const formattedDate = new Date(date_completed).toLocaleDateString();
+
+        console.log(`The tech "${first_name} ${last_name}" performed the task "${task_name}" on date ${formattedDate}.`);
     };
 };
 
@@ -74,7 +92,6 @@ const buildSqlUpdateStr = (taskId, payload) => {
             summary: 'summary = ?,',
             taskStatus: 'task_status = ?,',
             dateCompleted: 'date_completed = ?,',
-            userId: 'user_id = ?,'
         };
 
         for (const [key, value] of Object.entries(payload)) {
@@ -85,8 +102,8 @@ const buildSqlUpdateStr = (taskId, payload) => {
             if (sqlMap[entry[0]]) {
                 sql += sqlMap[entry[0]];
                 sqlValues.push(entry[1]);
-            }
-        }
+            };
+        };
     
         let finalSql = sql.slice(0, sql.length - 1) + ' WHERE id = ?;'
         sqlValues.push(taskId);
@@ -97,7 +114,7 @@ const buildSqlUpdateStr = (taskId, payload) => {
     }
 };
 
-// Delete task
+// Delete specific task
 const deleteTask = async (taskId) => {
     try {
         const sql = 'DELETE from task WHERE id = ?';
@@ -114,5 +131,6 @@ module.exports = {
     getTasksByUser,
     createTask,
     updateTask,
-    deleteTask
+    deleteTask,
+    notifyManager
 };
