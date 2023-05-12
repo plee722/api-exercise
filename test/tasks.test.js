@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../server");
+const app = require("../app");
 const connection = require("../api/db");
 const { buildSqlUpdateStr } = require("../api/routes/helpers");
 

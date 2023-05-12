@@ -34,7 +34,7 @@ router.post("/", async (req, res, next) => {
         res.status(201).json({ task: data });
     } catch (error) {
         next(error);
-    }
+    };
 });
 
 // PUT route to update specific task
@@ -65,6 +65,5 @@ router.delete("/:taskId", async (req, res, next) => {
         next(error);
     }; 
 });
-
 
 module.exports = router;
