@@ -29,6 +29,8 @@ To view users and tasks in browser, these are the following GET endpoints: /api/
 ```
 curl -X GET http://localhost:8080/api/tasks -H "Content-Type: application/json" -d ''
 ```
+<img width="652" alt="Screenshot 2023-05-12 at 1 02 19 PM" src="https://github.com/plee722/api-exercise/assets/50183219/805bb5c6-cfc2-487a-9821-781c3ae31d0e">
+<img width="997" alt="Screenshot 2023-05-12 at 1 02 06 PM" src="https://github.com/plee722/api-exercise/assets/50183219/0266f198-07c1-465e-b557-0a4516d65971">
 
 * POST: /api/tasks/:taskId
 
