@@ -1,4 +1,4 @@
-# API Exercise with NodeJS, Express, and MySQL
+# API Exercise with NodeJS, Express, MySQL, and Docker
 
 ## Context
 * You are developing a software to account for maintenance tasks performed during a
@@ -18,9 +18,8 @@ summary from the task can contain personal information.
 
 ## Getting Started
 1. Install dependencies with `npm install`.
-2. To run app locally, run `npm run start`.
-3. If not already on local machine, download Docker for Desktop (https://www.docker.com/products/docker-desktop/).
-3. To spin up app in Docker container, first run `docker compose build` and then run `docker compose up`.
+2. If not already on local machine, download Docker for Desktop (https://www.docker.com/products/docker-desktop/) and start Docker application.
+3. To spin up app in Docker container, first run `docker compose build` and then run `docker compose up`. This will create the local dev environment in a docker container with the MySQL database.
 4. After Docker containers are up, go to localhost:8080.
 
 ## API Endpoints
