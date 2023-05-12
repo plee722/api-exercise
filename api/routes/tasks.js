@@ -31,7 +31,7 @@ router.post("/", async (req, res, next) => {
         if (!taskName || !summary || !userId) throw new Error('Missing task information');
 
         const data = await createTask([taskName, summary, userId]);
-        res.status(201).json({ task: data});
+        res.status(201).json({ task: data });
     } catch (error) {
         next(error);
     }
@@ -47,15 +47,15 @@ router.put("/user/:taskId", async (req, res, next) => {
 
         const data = await updateTask(taskId, payload);
         
-        await notifyManager(taskId, payload);
+        notifyManager(taskId, payload);
 
-        res.status(201).json({ task: data });
+        res.status(200).json({ task: data });
     } catch (error) {
         next(error);
     };
 });
 
-// Delete route for specific task
+// DELETE route for specific task
 router.delete("/:taskId", async (req, res, next) => {
     try {
         const userId = req.params.taskId;

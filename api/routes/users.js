@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { getUsers } = require("./helpers");
 
-// get all users
+// GET route for all users
 router.get("/", async (req, res, next) => {
     try {
         const data = await getUsers();

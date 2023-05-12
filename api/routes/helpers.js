@@ -1,7 +1,7 @@
-const connection = require("../../db");
+const connection = require("../db");
 const { promisify } = require("util");
 
-const query = promisify(connection.query).bind(connection)
+const query = promisify(connection.query).bind(connection);
 
 // Gets all users
 const getUsers = async () => {
@@ -10,11 +10,11 @@ const getUsers = async () => {
         const result = await query(sql);
         return result;
     } catch (error) {
-        throw error
-    }
+        throw error;
+    };
 };
 
-// Gets all tasks
+// Gets all tasks (not querying the summary due to personal information)
 const getTasks = async () => {
     try {
         const sql = 'SELECT id, task_name, task_status, date_completed, user_id FROM task';
@@ -70,7 +70,7 @@ const notifyManager = async (taskId, payload) => {
         let data = await query(sql, taskId);
 
         data = JSON.parse(JSON.stringify(data[0]));
-        console.log('data', data);
+        
         const { first_name, last_name, task_name, date_completed } = data;
         const formattedDate = new Date(date_completed).toLocaleDateString();
 
@@ -83,15 +83,19 @@ const notifyManager = async (taskId, payload) => {
 // Builds up SQL statement and query values for updateTask
 const buildSqlUpdateStr = (taskId, payload) => {
     try {
-        let sql = 'UPDATE task SET ';
+        let sql = 'UPDATE task SET';
         let payloadArr = [];
         let sqlValues = [];
     
         const sqlMap = {
-            taskName: 'task_name = ?,',
-            summary: 'summary = ?,',
-            taskStatus: 'task_status = ?,',
-            dateCompleted: 'date_completed = ?,',
+            taskName: ' task_name = ?,',
+            summary: ' summary = ?,',
+            taskStatus: ' task_status = ?,',
+            dateCompleted: ' date_completed = ?,',
+        };
+
+        if ((taskId === null || taskId === undefined) || (Object.entries(payload).length === 0)) {
+            throw new Error("Missing arguments in buildSqlUpdateStr");
         };
 
         for (const [key, value] of Object.entries(payload)) {
@@ -132,5 +136,6 @@ module.exports = {
     createTask,
     updateTask,
     deleteTask,
-    notifyManager
+    notifyManager,
+    buildSqlUpdateStr
 };
