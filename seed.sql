@@ -1,6 +1,6 @@
 BEGIN;
 
-USE test_db;
+USE api_db;
 
 INSERT INTO user (id, first_name, last_name, user_role)
     VALUES (1, 'John', 'Doe', 'manager'),
