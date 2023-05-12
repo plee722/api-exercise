@@ -1,11 +1,14 @@
 const router = require("express").Router();
+const { getUsers } = require("./helpers");
 
-// const router = express.Router();
+// get all users
+router.get("/", async (req, res, next) => {
+    try {
+        const data = await getUsers();
+        res.status(200).json({ users: data });  
+    } catch (error) {
+        next(error);
+    };
+});
 
-router.get("/", (req, res, next) => {
-    console.log('HITTING ROUTE');
-    res.status(200).json({ test: 'test return' });    
-})
-
-// export default router;
 module.exports = router;
