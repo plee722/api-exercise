@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest --watchAll",
-    "dev": "npx nodemon server/index.js"
+    "dev": "npx nodemon server.js"
   },
   "author": "Peter Lee",
   "license": "ISC",
