@@ -3,7 +3,11 @@ const { promisify } = require("util");
 
 const query = promisify(connection.query).bind(connection);
 
-// Gets all users
+/* 
+Gets all users
+@param No arguments needed
+@return Array of users where each user is an object containing properties: id, first_name, last_name, user_role
+*/
 const getUsers = async () => {
     try {
         const sql = 'SELECT id, first_name, last_name, user_role from user';
@@ -14,29 +18,42 @@ const getUsers = async () => {
     };
 };
 
-// Gets all tasks (not querying the summary due to personal information)
+/* 
+Gets all tasks
+@param No arguments needed
+@return Array of tasks where each task is an object containing properties: id, task_name, task_status, date_completed, user_id
+Summary not queried due to containing personal information
+*/
 const getTasks = async () => {
     try {
         const sql = 'SELECT id, task_name, task_status, date_completed, user_id FROM task';
         const result = await query(sql);
         return result;
     } catch (error) {
-        throw error
-    }
+        throw error;
+    };
 };
 
-// Gets all tasks for a specific user
+/* 
+Gets all tasks for a specific user
+@param userId - id of specific user as integer
+@return Array of tasks where each task is an object containing properties: id, task_name, summary, task_status, date_completed, user_id
+*/
 const getTasksByUser = async (userId) => {
     try {
         const sql = 'SELECT id, task_name, summary, task_status, date_completed, user_id FROM task WHERE user_id = ?';
         const result = await query(sql, userId);
         return result;
     } catch (error) {
-        throw error
-    }
+        throw error;
+    };
 };
 
-// Creates new task
+/* 
+Creates new task
+@param taskValues - array of values used as query values in sql query 
+@return Object containing insertId
+*/
 const createTask = async (taskValues) => {
     try {
         const sql = 'INSERT INTO task (task_name, summary, user_id) VALUES (?, ?, ?)';
@@ -47,7 +64,12 @@ const createTask = async (taskValues) => {
     };
 };
 
-// Updates specific task
+/* 
+Update specific task
+@param taskId - id of task as integer
+@param payload - object containing key value pairs of column and respective values to be updated
+@return Object containing number of affected rows
+*/
 const updateTask = async (taskId, payload) => {
     try {
         const queryArr = buildSqlUpdateStr(taskId, payload);
@@ -61,9 +83,15 @@ const updateTask = async (taskId, payload) => {
     };
 };
 
+/* 
+Notify manager
+@param taskId - id of task as integer
+@param payload - object containing key value pairs of column and respective values to be updated
+@return No return. Prints a statement of task completion by relevant technician if task is marked to done
+
 // TODO: Add logic to prevent redundant notifications
 // TODO: Add functionality to notify, e.g. email notification
-// Notify manager (currently just a print statement)
+*/
 const notifyManager = async (taskId, payload) => {
     if (payload?.taskStatus === 'done') {
         const sql = 'SELECT user.first_name AS first_name, user.last_name AS last_name, task.task_name AS task_name, task.date_completed AS date_completed FROM user INNER JOIN task ON user.id = task.user_id where task.id = ?'
@@ -78,9 +106,15 @@ const notifyManager = async (taskId, payload) => {
     };
 };
 
+/* 
+Builds up SQL statement and query values for updateTask function
+@param taskId - id of task as integer
+@param payload - object containing key value pairs of column and respective values to be updated
+@return Array containing sql statement string as first element and array of values for update as second element
+
 // TODO: Find cleaner way to dynamically set values in updateTask
 // TODO: Add functionality for date completed to populate
-// Builds up SQL statement and query values for updateTask
+*/
 const buildSqlUpdateStr = (taskId, payload) => {
     try {
         let sql = 'UPDATE task SET';
@@ -115,10 +149,14 @@ const buildSqlUpdateStr = (taskId, payload) => {
         return [finalSql, sqlValues];
     } catch (error) {
         throw error;
-    }
+    };
 };
 
-// Delete specific task
+/* 
+Delete specific task
+@param taskId - id of task as integer
+@return No return. For delete query operation, nothing is returned
+*/
 const deleteTask = async (taskId) => {
     try {
         const sql = 'DELETE from task WHERE id = ?';
