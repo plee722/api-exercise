@@ -53,6 +53,7 @@ curl -X DELETE http://localhost:8080/api/tasks/2 -H "Content-Type: application/j
 ```
 
 * Database contains the schema below in schema.sql file:
+
 **User**
 CREATE TABLE IF NOT EXISTS user (
     id INT NOT NULL AUTO_INCREMENT,
